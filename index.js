@@ -31,6 +31,14 @@ async function run() {
     await client.connect();
     // Send a ping to confirm a successful connection
     const userCollection = client.db("BookNestDB").collection("users")
+    const BookCollection = client.db("BookNestDB").collection("allBooks")
+
+    app.get('/allBooks',async (req,res) => {
+        
+        const result = await BookCollection.find().toArray()
+        res.send(result)
+    })
+
 
     app.post('/newUser',async (req,res) => {
         const newUser = req.body
