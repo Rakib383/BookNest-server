@@ -32,6 +32,7 @@ async function run() {
     // Send a ping to confirm a successful connection
     const userCollection = client.db("BookNestDB").collection("users")
     const BookCollection = client.db("BookNestDB").collection("allBooks")
+    const BorrowedBooks = client.db("BookNestDB").collection("borrowedBooks")
 
     app.get('/allBooks',async (req,res) => {
         
@@ -58,9 +59,26 @@ async function run() {
     })
 
 
+
     app.post('/newUser',async (req,res) => {
         const newUser = req.body
         const result = await userCollection.insertOne(newUser)
+        res.send(result)
+
+    })
+
+    app.post('/borrowedBooks',async (req,res) => {
+        const data = req.body
+        const result = await BorrowedBooks.insertOne(data)
+        res.send(result)
+    })
+
+    app.patch('/books/:id/decrease',async (req,res) => {
+        const id = req.params.id
+        const result = await BookCollection.updateOne({_id:new ObjectId(id),quantity:{$gt:0}},{$inc:{quantity:-1}})
+        if(result.modifiedCount === 0) {
+            return res.send({error:'Quantity cannot be less than zero or product not found'})
+        }
         res.send(result)
 
     })
