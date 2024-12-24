@@ -38,6 +38,15 @@ async function run() {
         const result = await BookCollection.find().toArray()
         res.send(result)
     })
+    app.get('/books/:category',async (req,res) => {
+        const category = req.params.category;
+        
+        const query = {category:category}
+        console.log(query)
+        const result = await BookCollection.find(query).toArray()
+        res.send(result)
+
+    })
 
 
     app.post('/newUser',async (req,res) => {
