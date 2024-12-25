@@ -79,6 +79,19 @@ async function run() {
         res.send(result)
     })
 
+    app.post('/myBorrowedBooks',async (req,res) => {
+        const {email} = req.body
+        const result = await BorrowedBooks.find({Borrower_email:email}).toArray()
+        res.send(result)
+    })
+
+    app.patch('/books/:id/increase',async (req,res) => {
+        const id = req.params.id
+        const result = await BookCollection.updateOne({_id:new ObjectId(id)},{$inc:{quantity:1}})
+        res.send(result)
+    })
+
+
     app.patch('/books/:id/decrease',async (req,res) => {
         const id = req.params.id
         const result = await BookCollection.updateOne({_id:new ObjectId(id),quantity:{$gt:0}},{$inc:{quantity:-1}})
@@ -98,6 +111,13 @@ async function run() {
         }
        
         const result = await BookCollection.updateOne({_id:new ObjectId(id)},updateData)
+        res.send(result)
+
+    })
+
+    app.delete('/borrowedBooks/:id',async (req,res) => {
+        const id = req.params.id
+        const result = await BorrowedBooks.deleteOne({Book_id:id})
         res.send(result)
 
     })
