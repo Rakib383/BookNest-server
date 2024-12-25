@@ -73,6 +73,12 @@ async function run() {
         res.send(result)
     })
 
+    app.post('/addBook',async (req,res) => {
+        const book = req.body
+        const result = await BookCollection.insertOne(book)
+        res.send(result)
+    })
+
     app.patch('/books/:id/decrease',async (req,res) => {
         const id = req.params.id
         const result = await BookCollection.updateOne({_id:new ObjectId(id),quantity:{$gt:0}},{$inc:{quantity:-1}})
