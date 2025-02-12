@@ -55,11 +55,9 @@ async function run() {
     const userCollection = client.db("BookNestDB").collection("users");
     const BookCollection = client.db("BookNestDB").collection("allBooks");
     const BorrowedBooks = client.db("BookNestDB").collection("borrowedBooks");
+    const authorCollection = client.db("BookNestDB").collection("authors");
 
-    app.get("/allBooks", verifyToken, async (req, res) => {
-      if (req.user.email !== req.query.email) {
-        return res.status(403).send({ message: "forbidden access" });
-      }
+    app.get("/allBooks", async (req, res) => {
       const result = await BookCollection.find().toArray();
       res.send(result);
     });
@@ -83,6 +81,20 @@ async function run() {
       const query = { _id: new ObjectId(id) };
       // console.log(query)
       const result = await BookCollection.findOne(query);
+      res.send(result);
+    });
+
+    // authors
+    app.get("/authors", async (req, res) => {
+      const result = await authorCollection.find().toArray();
+      res.send(result);
+    });
+
+    app.get("/authors/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      // console.log(query)
+      const result = await authorCollection.findOne(query);
       res.send(result);
     });
 
