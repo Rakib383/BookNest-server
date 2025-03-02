@@ -57,8 +57,18 @@ async function run() {
     const BorrowedBooks = client.db("BookNestDB").collection("borrowedBooks");
     const authorCollection = client.db("BookNestDB").collection("authors");
 
-    app.get("/allBooks", async (req, res) => {
-      const result = await BookCollection.find().toArray();
+    app.get("/books", async (req, res) => {
+      const {categories} = req.query
+      // console.log(categories);
+      let filter = {}
+
+      if(categories) {
+        const categoryArray = categories.split(",").map(cat => cat.trim());
+        filter = {category:{$in:categoryArray}}
+      }
+
+      const result = await BookCollection.find(filter).toArray()
+      
       res.send(result);
     });
 
@@ -205,9 +215,9 @@ async function run() {
       res.send(result);
     });
     // await client.db("admin").command({ ping: 1 });
-    console.log(
-      "Pinged your deployment. You successfully connected to MongoDB!"
-    );
+    // console.log(
+    //   "Pinged your deployment. You successfully connected to MongoDB!"
+    // );
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
